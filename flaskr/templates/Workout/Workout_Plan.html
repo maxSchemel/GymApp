@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<workoutCont>
+    <form method="post">
+        <formBox>
+            <inputBox>
+                <label >Workout Name</label>
+                <input name="Workout Name" id="workout_name" required>
+            </inputBox>
+            <input id="submit" type="submit" value="Create Workout">
+        </formBox>
+    </form>
+    <SelectButton>
+        <a href="{{ url_for('index') }}">
+            Return to Main Menu
+        </a>
+    </SelectButton>
+</workoutCont>
+
+{% endblock %}

@@ -11,6 +11,9 @@
             <label for="password">Password</label>
             <input type="password" name="password" id="password" required>
         </inputBox>
+          {% for message in get_flashed_messages() %}
+            <div class="flash">{{ message }}</div>
+        {% endfor %}
           <input id="submit" type="submit" value="Log In">
     </formBox>
   </form>
