@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<mainMenu>
+    <SelectButton href="{{ url_for('workout.workout') }}">
+        <a href="{{ url_for('workout.workout') }}">
+            Workout
+        </a>
+    </SelectButton>
+
+    <SelectButton>
+        <a href="{{ url_for('workout.create_workout_plan') }}">
+                        Create Workout
+        </a>
+    </SelectButton>
+    <SelectButton>
+        <a href="{{ url_for('auth.delete_user') }}">
+                        Delete Account
+        </a>
+    </SelectButton>
+</mainMenu>
+{% endblock %}

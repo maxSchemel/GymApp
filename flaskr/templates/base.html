@@ -1,6 +1,7 @@
 <!doctype html>
 <title>{% block title %}{% endblock %} - Flaskr</title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<body>
 <nav>
   <h1 >M</h1>
   <ul>
@@ -14,8 +15,6 @@
   </ul>
 </nav>
 <section class="content">
-  {% for message in get_flashed_messages() %}
-    <div class="flash">{{ message }}</div>
-  {% endfor %}
   {% block content %}{% endblock %}
 </section>
+</body>
