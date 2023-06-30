@@ -1,117 +1,85 @@
 import pytest
 from datetime import datetime,timedelta
-from ..Model import WorkoutPlan, MissingExercisedictException, ExerciseTemplate, Workout, ExerciseWorkout
+from ..Model import GymLog, Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
 
 
 @pytest.fixture
-def workout_plan():
-    return WorkoutPlan("Plan 1", 123)
-
-
-@pytest.fixture
-def exercise_dict():
+def exercise_plan_dict():
     return {
-        "Exercise 1": ExerciseTemplate("Exercise 1", 3, 10, 20, 5),
-        "Exercise 2": ExerciseTemplate("Exercise 2", 4, 12, 15, 2),
-        "Exercise 3": ExerciseTemplate("Exercise 3", 3, 8, 30, 10),
+        "exercise1": ExercisePlan("Exercise 1", 3, 10, 20, 5),
+        "exercise2": ExercisePlan("Exercise 2", 4, 8, 30, 10),
     }
 
 
 @pytest.fixture
-def workout(workout_plan, exercise_dict):
-    workout_plan.add_exercise_dict(exercise_dict)
-    return workout_plan.create_new_workout()
+def prior_workout():
+    old_workout = Workout({"exercise1": 20,
+                          "exercise2": 30})
+    old_workout.date = old_workout.date - timedelta(days=2)
+    return old_workout
+
 
 @pytest.fixture
-def workout_list():
-    list = [workout()]
-    return[workout()]
+def workout_plan(exercise_plan_dict):
+    return WorkoutPlan("Workout", exercise_plan_dict)
 
 
-def test_workout_plan_initialization():
-    plan = WorkoutPlan("Plan 1", 123)
-    assert plan.name == "Plan 1"
-    assert plan.userid == 123
-    assert plan.exercise_dict is None
-    assert plan.workout_list is None
-    assert plan.id is None
+@pytest.fixture
+def gym_log(workout_plan):
+    gym_log_instance = GymLog("user1")
+    return gym_log_instance
 
 
-def test_workout_plan_add_exercise_dict(workout_plan, exercise_dict):
-    workout_plan.add_exercise_dict(exercise_dict)
-    assert workout_plan.exercise_dict == exercise_dict
 
-
-def test_workout_plan_create_new_workout(workout_plan, exercise_dict):
-    workout_plan.add_exercise_dict(exercise_dict)
-    workout = workout_plan.create_new_workout()
-    assert workout.exercise_List == []
-
-
-def test_workout_plan_create_new_workout_missing_exercisedict():
-    workout_plan = WorkoutPlan("Plan 1", 123)
-    with pytest.raises(MissingExercisedictException):
-        workout_plan.create_new_workout()
-
-
-def test_exercise_template_initialization():
-    exercise = ExerciseTemplate("Exercise 1", 3, 10, 20, 5)
-    assert exercise.name == "Exercise 1"
+def test_exercise_plan_valid_numbers():
+    exercise = ExercisePlan("Exercise 1", 3, 10, 20, 5)
     assert exercise.sets == 3
     assert exercise.reps == 10
     assert exercise.initial_weight == 20
     assert exercise.progression == 5
 
 
-def test_exercise_template_initialization_invalid_sets():
+def test_exercise_plan_invalid_numbers():
     with pytest.raises(ValueError):
-        ExerciseTemplate("Exercise 1", "3", 10, 20, 5)
+        ExercisePlan("Exercise 1", "3", 10, 20, 5)
 
 
-def test_exercise_template_initialization_invalid_reps():
-    with pytest.raises(ValueError):
-        ExerciseTemplate("Exercise 1", 3, "10", 20, 5)
+def test_workout_plan_create_workout(exercise_plan_dict):
+    workout_plan = WorkoutPlan("Workout", exercise_plan_dict)
+    workout = workout_plan.create_workout()
+    assert isinstance(workout, Workout)
+    assert workout.exercise_session_dict["exercise1"] == 20
+    assert workout.exercise_session_dict["exercise2"] == 30
 
 
-def test_exercise_template_initialization_invalid_initial_weight():
-    with pytest.raises(ValueError):
-        ExerciseTemplate("Exercise 1", 3, 10, "20", 5)
+def test_workout_plan_create_workout_from_prior_workout(exercise_plan_dict,prior_workout):
+    workout_plan = WorkoutPlan("Workout", exercise_plan_dict)
+    workout = workout_plan.create_workout(prior_workout)
+    assert isinstance(workout, Workout)
+    assert workout.exercise_session_dict["exercise1"] == 25
+    assert workout.exercise_session_dict["exercise2"] == 40
 
 
-def test_exercise_template_initialization_invalid_progression():
-    with pytest.raises(ValueError):
-        ExerciseTemplate("Exercise 1", 3, 10, 20, "5")
+def test_workout_new_is_greater_than_old_workout(exercise_plan_dict, prior_workout):
+    workout_plan = WorkoutPlan("Workout", exercise_plan_dict)
+    new_workout = workout_plan.create_workout(prior_workout)
+    assert (new_workout > prior_workout) is True
+    assert (prior_workout > new_workout) is False
 
 
-def test_workout_initialization(workout):
-    assert workout.exercise_List == []
+def test_gym_Log_creating_workout_without_workout_plan(gym_log):
+    with pytest.raises(MissingWorkoutPlanException):
+        gym_log.create_next_workout()
 
 
-def test_workout_more_recent_than():
-    workout1 = Workout([])
-    workout2 = Workout([])
-    workout2.date = workout2.date-timedelta(days=2)
-    print(workout1.date)
-    print(workout2.date)
-    assert workout1 > workout2
-    assert not (workout2 > workout1)
+def test_gym_Log_creating_workout_from_Plan(gym_log, workout_plan, prior_workout):
+    gym_log.add_workout_plan(workout_plan)
+    next_workout = gym_log.create_next_workout()
+    assert next_workout.is_equal(prior_workout) is True
 
 
-def test_workout_older_than():
-    workout1 = Workout([])
-    workout2 = Workout([])
-    workout1.date = workout1.date - timedelta(days=2)
-    assert not (workout1 > workout2)
-    assert workout2 > workout1
-
-
-def test_exercise_workout_initialization():
-    exercise_workout = ExerciseWorkout("Exercise 1", 123, 50)
-    assert exercise_workout.name == "Exercise 1"
-    assert exercise_workout.exercise_id == 123
-    assert exercise_workout.weight == 50
-
-
-def test_exercise_workout_initialization_invalid_weight():
-    with pytest.raises(ValueError):
-        ExerciseWorkout("Exercise 1", 123, "50")
+def test_gym_Log_creating_workout_from_prior(gym_log, workout_plan, prior_workout):
+    gym_log.add_workout_plan(workout_plan)
+    gym_log.add_workout(prior_workout)
+    next_workout = gym_log.create_next_workout()
+    assert next_workout.is_equal(workout_plan.create_workout(prior_workout)) is True
