@@ -1,5 +1,5 @@
 import pytest
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 from ..Model import GymLog, Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
 
 
@@ -13,8 +13,10 @@ def exercise_plan_dict():
 
 @pytest.fixture
 def prior_workout():
-    old_workout = Workout({"exercise1": 20,
-                          "exercise2": 30})
+    old_workout = Workout({"exercise1": {'name': "Exercise 1",
+                                         'weight': 20},
+                           "exercise2": {'name': "Exercise 2",
+                                         'weight': 30}})
     old_workout.date = old_workout.date - timedelta(days=2)
     return old_workout
 
@@ -28,7 +30,6 @@ def workout_plan(exercise_plan_dict):
 def gym_log(workout_plan):
     gym_log_instance = GymLog("user1")
     return gym_log_instance
-
 
 
 def test_exercise_plan_valid_numbers():
@@ -48,16 +49,16 @@ def test_workout_plan_create_workout(exercise_plan_dict):
     workout_plan = WorkoutPlan("Workout", exercise_plan_dict)
     workout = workout_plan.create_workout()
     assert isinstance(workout, Workout)
-    assert workout.exercise_session_dict["exercise1"] == 20
-    assert workout.exercise_session_dict["exercise2"] == 30
+    assert workout.exercise_session_dict["exercise1"]['weight'] == 20
+    assert workout.exercise_session_dict["exercise2"]['weight'] == 30
 
 
-def test_workout_plan_create_workout_from_prior_workout(exercise_plan_dict,prior_workout):
+def test_workout_plan_create_workout_from_prior_workout(exercise_plan_dict, prior_workout):
     workout_plan = WorkoutPlan("Workout", exercise_plan_dict)
     workout = workout_plan.create_workout(prior_workout)
     assert isinstance(workout, Workout)
-    assert workout.exercise_session_dict["exercise1"] == 25
-    assert workout.exercise_session_dict["exercise2"] == 40
+    assert workout.exercise_session_dict["exercise1"]['weight'] == 25
+    assert workout.exercise_session_dict["exercise2"]['weight'] == 40
 
 
 def test_workout_new_is_greater_than_old_workout(exercise_plan_dict, prior_workout):

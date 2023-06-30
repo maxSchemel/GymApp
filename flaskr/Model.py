@@ -34,14 +34,24 @@ class WorkoutPlan:
         return self.create_workout_from_prior_workout(last_workout)
 
     def create_first_workout(self):
-        exercise_session_dict = {key: self.exercise_plan_dict.get(key).initial_weight for key in self.exercise_plan_dict}
+        exercise_session_dict = {}
+        for key in self.exercise_plan_dict:
+            exercise_dict = {
+                'name': self.exercise_plan_dict[key].name,
+                'weight': self.exercise_plan_dict.get(key).initial_weight
+            }
+            exercise_session_dict[key] = exercise_dict
         return Workout(exercise_session_dict)
 
     def create_workout_from_prior_workout(self, last_workout):
         exercise_session_dict = {}
         for key in self.exercise_plan_dict:
-            exercise_session_dict[key] = last_workout.exercise_session_dict.get(key) \
-                                        + self.exercise_plan_dict.get(key).progression
+            exercise_dict = {
+                'name': self.exercise_plan_dict[key].name,
+                'weight': last_workout.exercise_session_dict.get(key)['weight']
+                          + self.exercise_plan_dict.get(key).progression
+            }
+            exercise_session_dict[key] = exercise_dict
         return Workout(exercise_session_dict)
 
 
@@ -61,7 +71,6 @@ class Workout:
         return self.exercise_session_dict == other.exercise_session_dict
 
 
-
 class GymLog(object):
     """Class GymLog
         The class is the central class of the Gym App.
@@ -69,7 +78,7 @@ class GymLog(object):
         The properties
 """
 
-    def __init__(self,  userid):
+    def __init__(self, userid):
         self.userid = userid
         self.workout_plan: Optional[WorkoutPlan] = None
         self.workout_list: List[Workout] = []
@@ -86,4 +95,3 @@ class GymLog(object):
         if self.workout_list:
             return self.workout_plan.create_workout(max(self.workout_list))
         return self.workout_plan.create_workout()
-
