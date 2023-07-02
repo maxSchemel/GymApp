@@ -1,7 +1,7 @@
 
 from werkzeug.security import check_password_hash
 import pytest
-from ..repository import IncorrectUsernameError, IncorrectPasswordError,\
+from GymApp.flaskr.src.repository.repository import IncorrectUsernameError, IncorrectPasswordError,\
                             UserAlreadyExistsError, UserDoesNotHaveAGymLog
 from GymApp.flaskr.src.domain.user import User
 from GymApp.flaskr.src.domain.Model import GymLog

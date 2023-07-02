@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import timedelta
 import pytest
-from ..repository import SQLiteRepository
+from GymApp.flaskr.src.repository.repository import SQLiteRepository
 from GymApp.flaskr.src.domain.user import User
 from GymApp.flaskr.src.domain.Model import GymLog, Workout, WorkoutPlan, ExercisePlan
 import os
@@ -12,7 +12,7 @@ def sqlite_repo():
     # Get the parent directory of the test file
     parent_dir = os.path.dirname(os.path.abspath(__file__))
     # Get the path to the schema.sql file
-    schema_path = os.path.join(parent_dir, '../schema.sql')
+    schema_path = os.path.join(parent_dir, '../src/database/schema.sql')
     # Create an in-memory SQLite database for testing
     conn = sqlite3.connect(':memory:')
     conn.row_factory = sqlite3.Row
