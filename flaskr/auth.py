@@ -86,6 +86,7 @@ def login():
         else:
             session.clear()
             session['user_id'] = user.id
+            g.user = user
             return redirect(url_for('index'))
 
         flash(error)
@@ -99,12 +100,9 @@ def delete_user():
     Delete the logged-in user.
     If the request method is POST, delete the user from the database.
     """
-    db = get_db()
-    flash('User will be deleted')
-    db.execute(
-        'DELETE FROM user WHERE username = ?', (g.user['username'],)
-    )
-    db.commit()
+    repo = SQLiteRepository(get_db())
+    repo.delete_user(g.user)
+    repo.commit()
 
     return redirect(url_for('auth.logout'))
 
@@ -121,9 +119,8 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        repo = SQLiteRepository(get_db())
+        g.user = repo.get_user(user_id)
 
 
 @bp.route('/logout')

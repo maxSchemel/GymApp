@@ -16,7 +16,7 @@ class User(object):
         password (str): The user's hashed password.
     """
 
-    def __init__(self, username, password):
+    def __init__(self, username, password, id=None):
         """Initialize a User object.
 
         Args:
@@ -24,6 +24,8 @@ class User(object):
             password (str): The user's plain password.
         """
         self.id = None
+        if id:
+            self.id = id
         self.active_workout = None
         self.username = username
         self.password = password

@@ -34,6 +34,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_user(self, user: User):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def save_gym_log(self, gym_log: GymLog):
         raise NotImplementedError
 
@@ -45,11 +49,18 @@ class AbstractRepository(abc.ABC):
     def update_gym_log(self, gym_log: GymLog, user: User):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def commit(self):
+        raise NotImplementedError
+
 
 class SQLiteRepository(AbstractRepository):
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
         self.connection.row_factory = sqlite3.Row
+
+    def commit(self):
+        self.connection.commit()
 
     def register_user(self, user: User):
         try:
@@ -76,6 +87,19 @@ class SQLiteRepository(AbstractRepository):
             raise IncorrectPasswordError
 
         user.add_id(user_db['id'])
+
+    def delete_user(self, user: User):
+        self.connection.execute(
+            'DELETE FROM user WHERE username = ?', (user.username,)
+        )
+
+    def get_user(self, id):
+        user_db = self.connection.execute(
+            'SELECT * FROM user WHERE id = ?', (id,)
+        ).fetchone()
+        if user_db:
+            return User(id=['id'], password=None, username=user_db['username'])
+        return None
 
     def save_gym_log(self, gym_log: GymLog):
         self.connection.execute(
