@@ -1,35 +1,7 @@
 import pytest
 from datetime import datetime, timedelta
 from ..Model import GymLog, Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
-
-
-@pytest.fixture
-def exercise_plan_dict():
-    return {
-        "exercise1": ExercisePlan("Exercise 1", 3, 10, 20, 5),
-        "exercise2": ExercisePlan("Exercise 2", 4, 8, 30, 10),
-    }
-
-
-@pytest.fixture
-def prior_workout():
-    old_workout = Workout({"exercise1": {'name': "Exercise 1",
-                                         'weight': 20},
-                           "exercise2": {'name': "Exercise 2",
-                                         'weight': 30}})
-    old_workout.date = old_workout.date - timedelta(days=2)
-    return old_workout
-
-
-@pytest.fixture
-def workout_plan(exercise_plan_dict):
-    return WorkoutPlan("Workout", exercise_plan_dict)
-
-
-@pytest.fixture
-def gym_log(workout_plan):
-    gym_log_instance = GymLog("user1")
-    return gym_log_instance
+from .conftest import exercise_plan_dict, prior_workout, workout_plan, gym_log
 
 
 def test_exercise_plan_valid_numbers():
