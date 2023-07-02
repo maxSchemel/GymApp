@@ -1,5 +1,4 @@
-from werkzeug.security import check_password_hash, generate_password_hash
-import datetime
+from werkzeug.security import check_password_hash
 
 
 class InvalidPassword(Exception):

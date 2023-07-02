@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Dict, Optional, List, Type
+from typing import Dict, Optional, List
 
 
 class MissingWorkoutPlanException(Exception):
@@ -36,7 +36,6 @@ class ExercisePlan:
         return True
 
 
-
 class WorkoutPlan:
     def __init__(self, name, exercise_plan_dict: Dict[str, ExercisePlan], id=None):
         self.name = name
@@ -65,8 +64,8 @@ class WorkoutPlan:
         for key in self.exercise_plan_dict:
             exercise_dict = {
                 'name': self.exercise_plan_dict[key].name,
-                'weight': last_workout.exercise_session_dict.get(key)['weight']
-                          + self.exercise_plan_dict.get(key).progression
+                'weight': last_workout.exercise_session_dict.get(key)['weight'] +
+                            self.exercise_plan_dict.get(key).progression
             }
             exercise_session_dict[key] = exercise_dict
         return Workout(exercise_session_dict)
