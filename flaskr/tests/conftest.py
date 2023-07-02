@@ -3,7 +3,7 @@ from datetime import timedelta
 import pytest
 from GymApp.flaskr.src.repository.repository import SQLiteRepository
 from GymApp.flaskr.src.domain.user import User
-from GymApp.flaskr.src.domain.Model import GymLog, Workout, WorkoutPlan, ExercisePlan
+from GymApp.flaskr.src.domain.workout import GymLog, Workout, WorkoutPlan, ExercisePlan
 import os
 
 

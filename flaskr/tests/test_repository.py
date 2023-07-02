@@ -4,7 +4,7 @@ import pytest
 from GymApp.flaskr.src.repository.repository import IncorrectUsernameError, IncorrectPasswordError,\
                             UserAlreadyExistsError, UserDoesNotHaveAGymLog
 from GymApp.flaskr.src.domain.user import User
-from GymApp.flaskr.src.domain.Model import GymLog
+from GymApp.flaskr.src.domain.workout import GymLog
 
 
 def test_register_user(sqlite_repo):

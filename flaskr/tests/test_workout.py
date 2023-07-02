@@ -1,5 +1,5 @@
 import pytest
-from GymApp.flaskr.src.domain.Model import Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
+from GymApp.flaskr.src.domain.workout import Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
 
 
 def test_exercise_plan_valid_numbers():

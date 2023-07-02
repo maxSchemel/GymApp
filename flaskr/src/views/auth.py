@@ -5,7 +5,8 @@ from flask import (
 
 from GymApp.flaskr.src.database.db import get_db
 from GymApp.flaskr.src.domain.user import User
-from GymApp.flaskr.src.repository.repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
+from GymApp.flaskr.src.repository.repository import SQLiteRepository, UserAlreadyExistsError,\
+                                        IncorrectUsernameError, IncorrectPasswordError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -15,6 +16,12 @@ def login_required(view):
     Decorator function to require authentication for a view.
     If a user is logged in, proceed to the view function.
     If no user is logged in, redirect to the login page.
+
+    Args:
+        view (function): The view function to be decorated.
+
+    Returns:
+        function: The wrapped view function.
     """
     @functools.wraps(view)
     def wrapped_view(**kwargs):
@@ -139,6 +146,12 @@ def login_required(view):
     Decorator function to require authentication for a view.
     If a user is logged in, proceed to the view function.
     If no user is logged in, redirect to the login page.
+
+    Args:
+        view (function): The view function to be decorated.
+
+    Returns:
+        function: The wrapped view function.
     """
     @functools.wraps(view)
     def wrapped_view(**kwargs):

@@ -1,26 +1,23 @@
-from werkzeug.security import check_password_hash
-
-
-class InvalidPassword(Exception):
-    pass
-
 
 class User(object):
     """Class representing a user.
 
+    This class represents a user in the system.
+
     Attributes:
-        id (int): The user's ID.
-        active_workout (object): The user's active workout.
-        username (str): The user's username.
-        password (str): The user's hashed password.
+        id (int): The ID of the user.
+        active_workout (Optional[Workout]): The active workout of the user.
+        username (str): The username of the user.
+        password (str): The password of the user.
     """
 
     def __init__(self, username, password, id=None):
-        """Initialize a User object.
+        """Initialize a User instance.
 
         Args:
-            username (str): The user's username.
-            password (str): The user's plain password.
+            username (str): The username of the user.
+            password (str): The password of the user.
+            id (Optional[int]): The ID of the user.
         """
         self.id = None
         if id:
@@ -29,23 +26,10 @@ class User(object):
         self.username = username
         self.password = password
 
-    def check_user_validity(self, password):
-        """Check if the user is valid.
-
-        Args:
-            password (str): The user's plain password.
-
-        Raises:
-            UserNotValidExcepction: If the user is not valid.
-        """
-        if not check_password_hash(password, self.password):
-            raise InvalidPassword
-        return
-
     def add_id(self, id):
         """Add an ID to the user.
 
         Args:
-            id (int): The user's ID.
+            id (int): The ID to be added.
         """
         self.id = id
