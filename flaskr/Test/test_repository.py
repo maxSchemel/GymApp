@@ -149,7 +149,7 @@ def test_load_gym_log_full_log(sqlite_repo, login_user, workout_plan):
     assert loaded_gym_log == gym_log
 
 
-def test_load_workout_plan( sqlite_repo, workout_plan):
+def test_load_workout_plan(sqlite_repo, workout_plan):
     # Save the workout plan
     sqlite_repo.save_workout_plan(workout_plan, gym_log_id=1)
 

@@ -65,7 +65,7 @@ class WorkoutPlan:
             exercise_dict = {
                 'name': self.exercise_plan_dict[key].name,
                 'weight': last_workout.exercise_session_dict.get(key)['weight'] +
-                            self.exercise_plan_dict.get(key).progression
+                          self.exercise_plan_dict.get(key).progression
             }
             exercise_session_dict[key] = exercise_dict
         return Workout(exercise_session_dict)
