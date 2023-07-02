@@ -1,10 +1,10 @@
 
 from werkzeug.security import check_password_hash
 import pytest
-from ..repository import IncorrectUsernameError, IncorrectPasswordError,\
+from GymApp.flaskr.src.repository.repository import IncorrectUsernameError, IncorrectPasswordError,\
                             UserAlreadyExistsError, UserDoesNotHaveAGymLog
-from ..user import User
-from ..Model import GymLog
+from GymApp.flaskr.src.domain.user import User
+from GymApp.flaskr.src.domain.workout import GymLog
 
 
 def test_register_user(sqlite_repo):
