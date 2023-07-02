@@ -5,6 +5,8 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
+from .user import User
+from .repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -42,14 +44,14 @@ def register():
         elif not password:
             error = 'Password is required.'
 
+        new_user = User(username, password)
+        repo = SQLiteRepository(db)
+
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-            except db.IntegrityError:
+                repo.register_user(new_user)
+                repo.connection.commit()
+            except UserAlreadyExistsError:
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for("auth.login"))
@@ -57,6 +59,7 @@ def register():
         flash(error)
 
     return render_template('auth/register.html')
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -70,19 +73,19 @@ def login():
         username = request.form['username']
         password = request.form['password']
         db = get_db()
+        repo = SQLiteRepository(db)
+
         error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
-
-        if user is None:
+        user = User(username, password)
+        try:
+            repo.login_user(user)
+        except IncorrectUsernameError:
             error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
+        except IncorrectPasswordError:
             error = 'Incorrect password.'
-
-        if error is None:
+        else:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = user.id
             return redirect(url_for('index'))
 
         flash(error)
