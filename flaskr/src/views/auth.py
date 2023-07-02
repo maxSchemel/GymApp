@@ -3,9 +3,9 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 
-from .db import get_db
-from .user import User
-from .repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
+from GymApp.flaskr.db import get_db
+from GymApp.flaskr.src.domain.user import User
+from GymApp.flaskr.repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 

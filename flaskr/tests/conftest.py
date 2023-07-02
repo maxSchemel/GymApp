@@ -2,8 +2,8 @@ import sqlite3
 from datetime import timedelta
 import pytest
 from ..repository import SQLiteRepository
-from ..user import User
-from ..Model import GymLog, Workout, WorkoutPlan, ExercisePlan
+from GymApp.flaskr.src.domain.user import User
+from GymApp.flaskr.src.domain.Model import GymLog, Workout, WorkoutPlan, ExercisePlan
 import os
 
 

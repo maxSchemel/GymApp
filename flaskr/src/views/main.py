@@ -2,7 +2,7 @@ from flask import (
     Blueprint, render_template
 )
 
-from .auth import login_required
+from GymApp.flaskr.src.views.auth import login_required
 
 bp = Blueprint('main', __name__)
 

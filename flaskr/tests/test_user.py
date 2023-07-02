@@ -1,4 +1,4 @@
-from ..user import InvalidPassword, User
+from GymApp.flaskr.src.domain.user import InvalidPassword, User
 import pytest
 from werkzeug.security import generate_password_hash
 

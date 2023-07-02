@@ -3,8 +3,8 @@ import sqlite3
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from .user import User
-from .Model import GymLog, WorkoutPlan, ExercisePlan
+from GymApp.flaskr.src.domain.user import User
+from GymApp.flaskr.src.domain.Model import GymLog, WorkoutPlan, ExercisePlan
 
 
 class IncorrectUsernameError(Exception):

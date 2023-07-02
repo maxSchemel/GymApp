@@ -1,5 +1,5 @@
 
-from .auth import login_required
+from GymApp.flaskr.src.views.auth import login_required
 from flask import (
     Blueprint, render_template
 )
