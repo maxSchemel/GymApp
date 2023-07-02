@@ -1,12 +1,10 @@
-import sqlite3
-from werkzeug.security import generate_password_hash, check_password_hash
-import pytest
-from ..repository import SQLiteRepository, IncorrectUsernameError, IncorrectPasswordError, UserAlreadyExistsError, UserDoesNotHaveAGymLog
-from ..user import User
-from ..Model import GymLog, WorkoutPlan
-import os
-from .conftest import sqlite_repo, login_user, gym_log, workout_plan
 
+from werkzeug.security import check_password_hash
+import pytest
+from ..repository import IncorrectUsernameError, IncorrectPasswordError,\
+                            UserAlreadyExistsError, UserDoesNotHaveAGymLog
+from ..user import User
+from ..Model import GymLog
 
 
 def test_register_user(sqlite_repo):
@@ -34,7 +32,7 @@ def test_register_user_that_already_exists(sqlite_repo):
     # Register the first user
     sqlite_repo.register_user(user)
 
-    #Register the second user
+    # Register the second user
     with pytest.raises(UserAlreadyExistsError):
         sqlite_repo.register_user(user)
 
@@ -77,6 +75,7 @@ def test_save_gym_log_without_workout_plan(sqlite_repo, login_user):
     assert gym_log_db is not None
     assert gym_log_db['user_id'] == login_user.id
 
+
 def test_save_gym_log_with_workout_plan(sqlite_repo, login_user, gym_log, workout_plan):
 
     gym_log.add_workout_plan(workout_plan)
@@ -118,8 +117,7 @@ def test_load_gym_log_no_log(sqlite_repo, login_user):
 
     # Load the gym Log
     with pytest.raises(UserDoesNotHaveAGymLog):
-        gym_log = sqlite_repo.load_gym_log(login_user)
-
+        sqlite_repo.load_gym_log(login_user)
 
 
 def test_workout_plan_exist(sqlite_repo, login_user):
@@ -133,13 +131,14 @@ def test_workout_plan_exist(sqlite_repo, login_user):
     # Check if a workout plan exists for the gym log (should return False)
     assert not sqlite_repo.workout_plan_exist(test_gym_log.id)
 
+
 def test_load_gym_log_full_log(sqlite_repo, login_user, workout_plan):
     # Create a gym log
     gym_log = GymLog(userid=login_user.id)
 
     gym_log.add_workout_plan(workout_plan)
 
-    #Save the gym Log
+    # Save the gym Log
     sqlite_repo.save_gym_log(gym_log)
 
     # Load the gym Log

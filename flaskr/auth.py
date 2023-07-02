@@ -2,13 +2,13 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
 from .user import User
 from .repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
 
 def login_required(view):
     """
@@ -24,6 +24,7 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():

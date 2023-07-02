@@ -131,10 +131,10 @@ class SQLiteRepository(AbstractRepository):
                 "INSERT INTO exercise_plans (workout_plan_id, exercise_key, name, sets, reps, initial_weight, "
                 "progression)"
                 " VALUES (?,?,?,?,?,?,?)",
-                (workout_plan.id, key, \
-                 workout_plan.exercise_plan_dict[key].name, \
-                 workout_plan.exercise_plan_dict[key].sets, \
-                 workout_plan.exercise_plan_dict[key].reps, \
+                (workout_plan.id, key,
+                 workout_plan.exercise_plan_dict[key].name,
+                 workout_plan.exercise_plan_dict[key].sets,
+                 workout_plan.exercise_plan_dict[key].reps,
                  workout_plan.exercise_plan_dict[key].initial_weight,
                  workout_plan.exercise_plan_dict[key].progression)
             )
@@ -179,9 +179,10 @@ class SQLiteRepository(AbstractRepository):
         ).fetchall()
         exercise_plan_dict = {}
         for row in exercise_plan_dict_db:
-            exercise_plan_dict[row['exercise_key']] = ExercisePlan(name=row['name'], sets=row['sets'], reps=row['reps'],
-                                                                   initial_weight=row['initial_weight'],
-                                                                   progression=row['progression'])
+            exercise_plan_dict[row['exercise_key']] = \
+                ExercisePlan(name=row['name'], sets=row['sets'], reps=row['reps'],
+                             initial_weight=row['initial_weight'],
+                             progression=row['progression'])
         return exercise_plan_dict
 
     def update_gym_log(self, gym_log: GymLog, user: User):
