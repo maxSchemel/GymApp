@@ -22,11 +22,28 @@ class ExercisePlan:
         self.initial_weight = initial_weight
         self.progression = progression
 
+    def __eq__(self, other):
+        if not self.name == other.name:
+            return False
+        if not self.sets == other.sets:
+            return False
+        if not self.reps == other.reps:
+            return False
+        if not self.initial_weight == other.initial_weight:
+            return False
+        if not self.progression == other.progression:
+            return False
+        return True
+
+
 
 class WorkoutPlan:
-    def __init__(self, name, exercise_plan_dict: Dict[str, ExercisePlan]):
+    def __init__(self, name, exercise_plan_dict: Dict[str, ExercisePlan], id=None):
         self.name = name
         self.exercise_plan_dict: Dict[str, ExercisePlan] = exercise_plan_dict
+        self.id = None
+        if id:
+            self.id = id
 
     def create_workout(self, last_workout=None):
         if last_workout is None:
@@ -54,6 +71,16 @@ class WorkoutPlan:
             exercise_session_dict[key] = exercise_dict
         return Workout(exercise_session_dict)
 
+    def add_id(self, id):
+        self.id = id
+
+    def __eq__(self, other):
+        if not self.name == other.name:
+            return False
+        if not self.exercise_plan_dict == other.exercise_plan_dict:
+            return False
+        return True
+
 
 class Workout:
     def __init__(self, exercise_session_dict):
@@ -78,10 +105,13 @@ class GymLog(object):
         The properties
 """
 
-    def __init__(self, userid):
+    def __init__(self, userid, id=None):
         self.userid = userid
         self.workout_plan: Optional[WorkoutPlan] = None
         self.workout_list: List[Workout] = []
+        self.id = None
+        if id:
+            self.id = id
 
     def add_workout_plan(self, workout_plan):
         self.workout_plan = workout_plan
@@ -95,3 +125,13 @@ class GymLog(object):
         if self.workout_list:
             return self.workout_plan.create_workout(max(self.workout_list))
         return self.workout_plan.create_workout()
+
+    def add_id(self, id):
+        self.id = id
+
+    def __eq__(self, other):
+        if not self.userid == other.userid:
+            return False
+        if not self.workout_plan == other.workout_plan:
+            return False
+        return True
