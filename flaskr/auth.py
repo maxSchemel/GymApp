@@ -2,11 +2,13 @@ import functools
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
-from werkzeug.security import check_password_hash, generate_password_hash
 
 from .db import get_db
+from .user import User
+from .repository import SQLiteRepository, UserAlreadyExistsError, IncorrectUsernameError, IncorrectPasswordError
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
 
 def login_required(view):
     """
@@ -22,6 +24,7 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -42,14 +45,14 @@ def register():
         elif not password:
             error = 'Password is required.'
 
+        new_user = User(username, password)
+        repo = SQLiteRepository(db)
+
         if error is None:
             try:
-                db.execute(
-                    "INSERT INTO user (username, password) VALUES (?, ?)",
-                    (username, generate_password_hash(password)),
-                )
-                db.commit()
-            except db.IntegrityError:
+                repo.register_user(new_user)
+                repo.connection.commit()
+            except UserAlreadyExistsError:
                 error = f"User {username} is already registered."
             else:
                 return redirect(url_for("auth.login"))
@@ -57,6 +60,7 @@ def register():
         flash(error)
 
     return render_template('auth/register.html')
+
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
@@ -70,19 +74,20 @@ def login():
         username = request.form['username']
         password = request.form['password']
         db = get_db()
+        repo = SQLiteRepository(db)
+
         error = None
-        user = db.execute(
-            'SELECT * FROM user WHERE username = ?', (username,)
-        ).fetchone()
-
-        if user is None:
+        user = User(username, password)
+        try:
+            repo.login_user(user)
+        except IncorrectUsernameError:
             error = 'Incorrect username.'
-        elif not check_password_hash(user['password'], password):
+        except IncorrectPasswordError:
             error = 'Incorrect password.'
-
-        if error is None:
+        else:
             session.clear()
-            session['user_id'] = user['id']
+            session['user_id'] = user.id
+            g.user = user
             return redirect(url_for('index'))
 
         flash(error)
@@ -96,12 +101,9 @@ def delete_user():
     Delete the logged-in user.
     If the request method is POST, delete the user from the database.
     """
-    db = get_db()
-    flash('User will be deleted')
-    db.execute(
-        'DELETE FROM user WHERE username = ?', (g.user['username'],)
-    )
-    db.commit()
+    repo = SQLiteRepository(get_db())
+    repo.delete_user(g.user)
+    repo.commit()
 
     return redirect(url_for('auth.logout'))
 
@@ -118,9 +120,8 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_db().execute(
-            'SELECT * FROM user WHERE id = ?', (user_id,)
-        ).fetchone()
+        repo = SQLiteRepository(get_db())
+        g.user = repo.get_user(user_id)
 
 
 @bp.route('/logout')

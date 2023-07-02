@@ -34,12 +34,3 @@ CREATE TABLE exercise_plans (
 
   FOREIGN KEY (workout_plan_id) REFERENCES workout_plans (id)
 );
-
-CREATE TABLE exercise (
-  id INTEGER PRIMARY KEY AUTOINCREMENT,
-  workout_id INTEGER NOT NULL,
-  name Integer Not Null,
-  Weight  Float Not Null,
-  Progression Float,
-  FOREIGN KEY (workout_id) REFERENCES workout (id)
-);

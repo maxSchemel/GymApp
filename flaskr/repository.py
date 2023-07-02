@@ -34,6 +34,10 @@ class AbstractRepository(abc.ABC):
         raise NotImplementedError
 
     @abc.abstractmethod
+    def delete_user(self, user: User):
+        raise NotImplementedError
+
+    @abc.abstractmethod
     def save_gym_log(self, gym_log: GymLog):
         raise NotImplementedError
 
@@ -45,11 +49,18 @@ class AbstractRepository(abc.ABC):
     def update_gym_log(self, gym_log: GymLog, user: User):
         raise NotImplementedError
 
+    @abc.abstractmethod
+    def commit(self):
+        raise NotImplementedError
+
 
 class SQLiteRepository(AbstractRepository):
     def __init__(self, connection: sqlite3.Connection):
         self.connection = connection
         self.connection.row_factory = sqlite3.Row
+
+    def commit(self):
+        self.connection.commit()
 
     def register_user(self, user: User):
         try:
@@ -76,6 +87,19 @@ class SQLiteRepository(AbstractRepository):
             raise IncorrectPasswordError
 
         user.add_id(user_db['id'])
+
+    def delete_user(self, user: User):
+        self.connection.execute(
+            'DELETE FROM user WHERE username = ?', (user.username,)
+        )
+
+    def get_user(self, id):
+        user_db = self.connection.execute(
+            'SELECT * FROM user WHERE id = ?', (id,)
+        ).fetchone()
+        if user_db:
+            return User(id=['id'], password=None, username=user_db['username'])
+        return None
 
     def save_gym_log(self, gym_log: GymLog):
         self.connection.execute(
@@ -107,10 +131,10 @@ class SQLiteRepository(AbstractRepository):
                 "INSERT INTO exercise_plans (workout_plan_id, exercise_key, name, sets, reps, initial_weight, "
                 "progression)"
                 " VALUES (?,?,?,?,?,?,?)",
-                (workout_plan.id, key, \
-                 workout_plan.exercise_plan_dict[key].name, \
-                 workout_plan.exercise_plan_dict[key].sets, \
-                 workout_plan.exercise_plan_dict[key].reps, \
+                (workout_plan.id, key,
+                 workout_plan.exercise_plan_dict[key].name,
+                 workout_plan.exercise_plan_dict[key].sets,
+                 workout_plan.exercise_plan_dict[key].reps,
                  workout_plan.exercise_plan_dict[key].initial_weight,
                  workout_plan.exercise_plan_dict[key].progression)
             )
@@ -155,9 +179,10 @@ class SQLiteRepository(AbstractRepository):
         ).fetchall()
         exercise_plan_dict = {}
         for row in exercise_plan_dict_db:
-            exercise_plan_dict[row['exercise_key']] = ExercisePlan(name=row['name'], sets=row['sets'], reps=row['reps'],
-                                                                   initial_weight=row['initial_weight'],
-                                                                   progression=row['progression'])
+            exercise_plan_dict[row['exercise_key']] = \
+                ExercisePlan(name=row['name'], sets=row['sets'], reps=row['reps'],
+                             initial_weight=row['initial_weight'],
+                             progression=row['progression'])
         return exercise_plan_dict
 
     def update_gym_log(self, gym_log: GymLog, user: User):

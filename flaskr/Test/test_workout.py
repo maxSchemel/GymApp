@@ -1,7 +1,5 @@
 import pytest
-from datetime import datetime, timedelta
-from ..Model import GymLog, Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
-from .conftest import exercise_plan_dict, prior_workout, workout_plan, gym_log
+from ..Model import Workout, MissingWorkoutPlanException, WorkoutPlan, ExercisePlan
 
 
 def test_exercise_plan_valid_numbers():
@@ -40,18 +38,18 @@ def test_workout_new_is_greater_than_old_workout(exercise_plan_dict, prior_worko
     assert (prior_workout > new_workout) is False
 
 
-def test_gym_Log_creating_workout_without_workout_plan(gym_log):
+def test_gym_log_creating_workout_without_workout_plan(gym_log):
     with pytest.raises(MissingWorkoutPlanException):
         gym_log.create_next_workout()
 
 
-def test_gym_Log_creating_workout_from_Plan(gym_log, workout_plan, prior_workout):
+def test_gym_log_creating_workout_from_Plan(gym_log, workout_plan, prior_workout):
     gym_log.add_workout_plan(workout_plan)
     next_workout = gym_log.create_next_workout()
     assert next_workout.is_equal(prior_workout) is True
 
 
-def test_gym_Log_creating_workout_from_prior(gym_log, workout_plan, prior_workout):
+def test_gym_log_creating_workout_from_prior(gym_log, workout_plan, prior_workout):
     gym_log.add_workout_plan(workout_plan)
     gym_log.add_workout(prior_workout)
     next_workout = gym_log.create_next_workout()

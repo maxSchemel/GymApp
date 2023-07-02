@@ -1,5 +1,5 @@
 import sqlite3
-from datetime import datetime, timedelta
+from datetime import timedelta
 import pytest
 from ..repository import SQLiteRepository
 from ..user import User
