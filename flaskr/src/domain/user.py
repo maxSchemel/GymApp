@@ -1,6 +1,7 @@
 
 class User(object):
-    """Class representing a user.
+    """Class representing a user in the system. The user has as a username and a password,
+        as well as a unique Id.
 
     This class represents a user in the system.
 

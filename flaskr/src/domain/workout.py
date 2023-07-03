@@ -9,6 +9,10 @@ class MissingWorkoutPlanException(Exception):
 
 
 class ExercisePlan:
+    """
+    The exercise class represents one exercise of a workout plan. For the workout one needs to know how many
+    sets and reps of the exercise is done, as well as the progression of one workout to the next.
+    """
 
     def __init__(self, name, sets, reps, initial_weight, progression):
         """
@@ -111,6 +115,7 @@ class WorkoutPlan:
         """
         exercise_session_dict = {}
         for key in self.exercise_plan_dict:
+            # No previous workout exists thus weight is simply the initial weight
             exercise_dict = {
                 'name': self.exercise_plan_dict[key].name,
                 'weight': self.exercise_plan_dict.get(key).initial_weight
@@ -132,6 +137,7 @@ class WorkoutPlan:
         """
         exercise_session_dict = {}
         for key in self.exercise_plan_dict:
+            # New weight is weight from old workout + progression
             exercise_dict = {
                 'name': self.exercise_plan_dict[key].name,
                 'weight': last_workout.exercise_session_dict.get(key)['weight'] +
@@ -297,4 +303,3 @@ class GymLog(object):
         if not self.workout_plan == other.workout_plan:
             return False
         return True
-

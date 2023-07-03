@@ -59,6 +59,34 @@ def test_login_user(sqlite_repo):
         sqlite_repo.login_user(wrong_password_user)
 
 
+def test_get_user(sqlite_repo):
+    # Create a test user
+    user = User(username='testuser', password='password')
+
+    # Register the user
+    sqlite_repo.register_user(user)
+
+    test_user = sqlite_repo.get_user(user.id)
+
+    assert test_user.username == user.username
+    assert test_user.id == user.id
+
+
+def test_delete_user(sqlite_repo):
+    # Create a test user
+    user = User(username='testuser', password='password')
+
+    # Register the user
+    sqlite_repo.register_user(user)
+
+    # Delete the user
+    sqlite_repo.delete_user(user)
+
+    # Try to get the user
+    test_user = sqlite_repo.get_user(user.id)
+    assert test_user is None
+
+
 def test_save_gym_log_without_workout_plan(sqlite_repo, login_user):
 
     # Create a gym Log
