@@ -303,4 +303,3 @@ class GymLog(object):
         if not self.workout_plan == other.workout_plan:
             return False
         return True
-

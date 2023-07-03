@@ -194,7 +194,8 @@ class SQLiteRepository(AbstractRepository):
         return None
 
     def save_gym_log(self, gym_log: GymLog):
-        """Save a gym log for a user by inserting the user ID into the `gym_logs` table and saving associated workout and exercise plans.
+        """Save a gym log for a user by inserting the user ID into the `gym_logs` table and
+         saving associated workout and exercise plans.
 
         Args:
             gym_log (GymLog): The gym log object to be saved.
@@ -212,7 +213,8 @@ class SQLiteRepository(AbstractRepository):
             self.save_workout_plan(gym_log.workout_plan, gym_log.id)
 
     def save_workout_plan(self, workout_plan: WorkoutPlan, gym_log_id):
-        """Save a workout plan for a gym log by inserting the plan's name and associated gym log ID into the `workout_plans` table.
+        """Save a workout plan for a gym log by inserting the plan's name and
+        associated gym log ID into the `workout_plans` table.
 
         Args:
             workout_plan (WorkoutPlan): The workout plan object to be saved.

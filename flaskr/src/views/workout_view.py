@@ -3,6 +3,7 @@ from flask import Blueprint, render_template
 
 bp = Blueprint('workout_view', __name__)
 
+
 @bp.route('/workout', methods=('GET', 'POST'))
 @login_required
 def workout():
@@ -14,6 +15,7 @@ def workout():
         The rendered Workout page template.
     """
     return render_template('workout/Workout.html')
+
 
 @bp.route('/create_workout_plan', methods=('GET', 'POST'))
 @login_required
