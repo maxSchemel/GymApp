@@ -2,14 +2,14 @@
 
 {% block content %}
 <mainMenu>
-    <SelectButton href="{{ url_for('workout.workout') }}">
-        <a href="{{ url_for('workout.workout') }}">
+    <SelectButton href="{{ url_for('workout_view.workout') }}">
+        <a href="{{ url_for('workout_view.workout') }}">
             Workout
         </a>
     </SelectButton>
 
     <SelectButton>
-        <a href="{{ url_for('workout.create_workout_plan') }}">
+        <a href="{{ url_for('workout_view.create_workout_plan') }}">
                         Create Workout
         </a>
     </SelectButton>
