@@ -190,7 +190,7 @@ class SQLiteRepository(AbstractRepository):
             'SELECT * FROM user WHERE id = ?', (id,)
         ).fetchone()
         if user_db:
-            return User(id=['id'], password=None, username=user_db['username'])
+            return User(id=user_db['id'], password=None, username=user_db['username'])
         return None
 
     def save_gym_log(self, gym_log: GymLog):
