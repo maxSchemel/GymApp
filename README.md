@@ -36,7 +36,7 @@ $ flask --app flaskr run --debug
 $ pytest
 ```
 ## Pull Requests
-Pull requests to the main branch are automatically checked using a CI Pipe. The .yml file is in .github/workflow/python-app.yml. The CI Pipe checks the coding style using flake 8 and tests the code using pytest.
+Pull requests to the main branch are automatically checked using a CI Pipe. The .yml file is in .github/workflow/python-app.yml. The CI Pipe checks the coding style using flake 8 and tests the code using pytest. Furthermore the code is being scanned by CodeQl.
 ## Documentation
 The code is documented using Pydoc. The documentation can be accessed with
 ```sh
